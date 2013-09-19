@@ -1,0 +1,8 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	logallrefupdates = true
+	bare = false
+[remote "octopus-server-pub"]
+	url = https://github.com/alexmy21/octopus-server-pub.git
+	fetch = +refs/heads/*:refs/remotes/octopus-server-pub/*
