@@ -28,7 +28,7 @@ import org.lisapark.octopusjettyserver.servlets.ModelRunnerServlet;
 import org.lisapark.octopusjettyserver.servlets.Test;
 
 /**
- * ModelRunner
+ * ModelRunner Servlet
  *
  */
 public class JettyModelRunner {    
