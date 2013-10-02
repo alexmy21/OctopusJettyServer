@@ -25,6 +25,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.lisapark.octopusjettyserver.servlets.ContextListener;
 import org.lisapark.octopusjettyserver.servlets.ModelRunnerServlet;
+import org.lisapark.octopusjettyserver.servlets.SelectModels;
 import org.lisapark.octopusjettyserver.servlets.Test;
 
 /**
@@ -84,12 +85,12 @@ public class JettyModelRunner {
         server.setStopAtShutdown(true);
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.setContextPath("/ModelRunner");
+        context.setContextPath("/");
         context.setResourceBase(".");
 
-        context.addServlet(new ServletHolder(new Test()), "/test/*");
-        context.addServlet(new ServletHolder(new ModelRunnerServlet()), "/*");
-
+        context.addServlet(new ServletHolder(new SelectModels()), "/search/*");
+        context.addServlet(new ServletHolder(new ModelRunnerServlet()), "/run/*");
+        
         context.addEventListener(new ContextListener());
 
         context.setInitParameter(ContextListener.KEY_DB4O_FILE_NAME, repositoryFile);
