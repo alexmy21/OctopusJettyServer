@@ -39,8 +39,10 @@ public class ContextListener  implements ServletContextListener {
     
     public static final String KEY_DB4O_UID         = "db4oUid";
     public static final String KEY_DB4O_PSW         = "db4oPsw";
+    
     public final static String KEY_MODEL_NAME_PARAM     = "modelname";
     public final static String KEY_PARAM_NAME_PARAM     = "prefixname";
+    public final static String KEY_MODEL_JSON_PARAM     = "modeljson";
     
     private ObjectServer server = null;
     
