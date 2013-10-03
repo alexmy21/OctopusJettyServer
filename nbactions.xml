@@ -14,9 +14,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
--->
-
-<actions>
+--><actions>
         <action>
             <actionName>run</actionName>
             <goals>
@@ -24,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath ${packageClassName} octopus.properties</exec.args>
+                <exec.args>-classpath %classpath org.lisapark.octopusjettyserver.JettyModelRunner octopus.properties</exec.args>
                 <exec.executable>java</exec.executable>
                 <exec.classpathScope>runtime</exec.classpathScope>
             </properties>

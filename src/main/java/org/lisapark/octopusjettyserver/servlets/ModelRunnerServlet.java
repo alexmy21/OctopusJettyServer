@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.lisapark.octopus.ModelRunner;
+import org.lisapark.octopus.core.ModelBean;
 import org.lisapark.octopus.core.ProcessingModel;
 import org.lisapark.octopus.repository.OctopusRepository;
 import org.lisapark.octopus.repository.RepositoryException;
@@ -57,7 +58,9 @@ public class ModelRunnerServlet extends HttpServlet {
      * Processes requests for both HTTP
      * <code>GET</code> and
      * <code>POST</code> methods.
-     *
+     */
+    
+     /**
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -90,6 +93,41 @@ public class ModelRunnerServlet extends HttpServlet {
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet ModelRunner has run Model: " + modelName + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
+            
+        } finally {
+            out.close();
+        }
+    }
+    
+    protected void processRequest(ObjectServer server, String modelName, 
+            ModelBean modelBean, HttpServletResponse response) throws IOException, RepositoryException {
+
+        OctopusRepository repository = new OctopusDb4oRepository(server);
+
+        ProcessingModel currentProcessingModel;
+
+        currentProcessingModel = repository.getProcessingModelByName(modelBean.getModelName());
+
+        ModelRunner modelRunner = new ModelRunner(currentProcessingModel, modelBean);
+
+        modelRunner.runModel();
+        
+        response.setStatus(200);
+        response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        
+        try {
+            /*
+             * TODO output your page here. You may use following sample code.
+             */
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet ModelRunner</title>");
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet ModelRunner has run Model: " + modelBean.getModelName() + "</h1>");
             out.println("</body>");
             out.println("</html>");
             
@@ -179,27 +217,36 @@ public class ModelRunnerServlet extends HttpServlet {
             
             String modelNameParam = (String)servletContext.getInitParameter(ContextListener.KEY_MODEL_NAME_PARAM);
             String paramNameParam = (String)servletContext.getInitParameter(ContextListener.KEY_PARAM_NAME_PARAM);
+            String modelJsonParam = (String)servletContext.getInitParameter(ContextListener.KEY_MODEL_JSON_PARAM);
             
             String modelName = requestParamMap.get(modelNameParam);
-            String jsonString = requestParamMap.get(paramNameParam);
+            String paramName = requestParamMap.get(paramNameParam);
+            String modelJson = requestParamMap.get(modelJsonParam);
             
             Preconditions.checkNotNull(modelName, "Model name cannot be null.");
             
-            Map<String, String> paramMap = Maps.newHashMap();
+            
 
-            if (jsonString == null || jsonString.isEmpty()) {
+            if (modelJson != null && !modelJson.isEmpty()) {
+                
+                ModelBean modelBean = new Gson().fromJson(modelJson, ModelBean.class);
+                processRequest(server, modelName, modelBean, response);
+                
+            } else if (paramName != null && !paramName.isEmpty()) {
+                
+                Map<String, String> paramMap = new Gson().fromJson(paramName, Map.class);
+                processRequest(server, modelName, paramMap, response);
                 
             } else {
-                paramMap = new Gson().fromJson(jsonString, Map.class);
+                ModelBean modelBean = null;
+                processRequest(server, modelName, modelBean, response);
+                
             }
-            
-            processRequest(server, modelName, paramMap, response);
             
         } catch (RepositoryException ex) {
             Exceptions.printStackTrace(ex);
         } catch (Exception e) { 
-            /*report an error*/ 
-        
+            /*report an error*/         
         } 
         
     }
