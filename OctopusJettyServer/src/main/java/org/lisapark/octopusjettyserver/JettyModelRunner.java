@@ -80,6 +80,7 @@ public class JettyModelRunner {
         String db4oPsw = properties.getProperty("db4o.server.psw");
         String modelname = properties.getProperty("model.name.param");
         String prefixname = properties.getProperty("prefix.name.param");
+        String modeljson = properties.getProperty("model.json.param");
         
         Server server = new Server(Integer.parseInt(jettyServerPort));
         server.setStopAtShutdown(true);
@@ -99,6 +100,7 @@ public class JettyModelRunner {
         context.setInitParameter(ContextListener.KEY_DB4O_PSW, db4oPsw);
         context.setInitParameter(ContextListener.KEY_MODEL_NAME_PARAM, modelname);
         context.setInitParameter(ContextListener.KEY_PARAM_NAME_PARAM, prefixname);
+        context.setInitParameter(ContextListener.KEY_MODEL_JSON_PARAM, modeljson);
 
         server.setHandler(context);
 

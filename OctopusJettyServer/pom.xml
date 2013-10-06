@@ -429,7 +429,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>octopus-core</artifactId>
+            <artifactId>octopus-core-11</artifactId>
             <version>0.5</version>
         </dependency>
     </dependencies>

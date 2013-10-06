@@ -45,29 +45,32 @@ import org.openide.util.Exceptions;
 public class ModelRunnerServlet extends HttpServlet {
 
     /**
-     * ModelRunnerServlet allows to run Octopus models on any http server. In order to
-     * run models the following conditions should be met:
-     *  - the running model should be presented in server side db4o database;
-     *  - the request for execution of this model should include at least one parameter with
-     *    model name. Name of this parameter is in the http server octopus.properties file;
-     * 
-     * All parameter names for the executable model should be prefixed with a standard prefix, 
-     * it is also provided in octopus.properties file. Prefix and parameter name are separated 
-     * by period (.).
-     * 
+     * ModelRunnerServlet allows to run Octopus models on any http server. In
+     * order to run models the following conditions should be met: - the running
+     * model should be presented in server side db4o database; - the request for
+     * execution of this model should include at least one parameter with model
+     * name. Name of this parameter is in the http server octopus.properties
+     * file;
+     *
+     * All parameter names for the executable model should be prefixed with a
+     * standard prefix, it is also provided in octopus.properties file. Prefix
+     * and parameter name are separated by period (.).
+     *
      * Processes requests for both HTTP
      * <code>GET</code> and
      * <code>POST</code> methods.
      */
-    
-     /**
+    /**
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(ObjectServer server, String modelName, 
-            Map<String, String> paramMap, HttpServletResponse response) throws IOException, RepositoryException {
+    protected void processRequest(String modelName, Map<String, String> paramMap, 
+            HttpServletResponse response) throws IOException, RepositoryException {
+
+        ServletContext servletContext = this.getServletContext();
+        ObjectServer server = (ObjectServer) servletContext.getAttribute(ContextListener.KEY_DB4O_SERVER);
 
         OctopusRepository repository = new OctopusDb4oRepository(server);
 
@@ -78,11 +81,11 @@ public class ModelRunnerServlet extends HttpServlet {
         ModelRunner modelRunner = new ModelRunner(currentProcessingModel, paramMap, paramMap);
 
         modelRunner.runModel();
-        
+
         response.setStatus(200);
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        
+
         try {
             /*
              * TODO output your page here. You may use following sample code.
@@ -95,14 +98,17 @@ public class ModelRunnerServlet extends HttpServlet {
             out.println("<h1>Servlet ModelRunner has run Model: " + modelName + "</h1>");
             out.println("</body>");
             out.println("</html>");
-            
+
         } finally {
             out.close();
         }
     }
-    
-    protected void processRequest(ObjectServer server, String modelName, 
-            ModelBean modelBean, HttpServletResponse response) throws IOException, RepositoryException {
+
+    protected void processRequest(String modelName, ModelBean modelBean, 
+            HttpServletResponse response) throws IOException, RepositoryException {
+
+        ServletContext servletContext = this.getServletContext();
+        ObjectServer server = (ObjectServer) servletContext.getAttribute(ContextListener.KEY_DB4O_SERVER);
 
         OctopusRepository repository = new OctopusDb4oRepository(server);
 
@@ -113,11 +119,11 @@ public class ModelRunnerServlet extends HttpServlet {
         ModelRunner modelRunner = new ModelRunner(currentProcessingModel, modelBean);
 
         modelRunner.runModel();
-        
+
         response.setStatus(200);
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        
+
         try {
             /*
              * TODO output your page here. You may use following sample code.
@@ -130,7 +136,7 @@ public class ModelRunnerServlet extends HttpServlet {
             out.println("<h1>Servlet ModelRunner has run Model: " + modelBean.getModelName() + "</h1>");
             out.println("</body>");
             out.println("</html>");
-            
+
         } finally {
             out.close();
         }
@@ -149,28 +155,27 @@ public class ModelRunnerServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        ServletContext servletContext = this.getServletContext();
-        ObjectServer server = (ObjectServer) servletContext.getAttribute(ContextListener.KEY_DB4O_SERVER);
 
         try {
             if (request.getCharacterEncoding() == null) {
                 request.setCharacterEncoding("UTF-8");
             }
 
-            String modelNameParam = (String) servletContext.getInitParameter(ContextListener.KEY_MODEL_NAME_PARAM);
+            ServletContext servletContext = this.getServletContext();
             
+            String modelNameParam = (String) servletContext.getInitParameter(ContextListener.KEY_MODEL_NAME_PARAM);
+
             String modelName = request.getParameter(modelNameParam);
 
             Map<String, String> paramMap = Maps.newHashMap();
-            
+
             Enumeration<String> attrList = request.getParameterNames();
             while (attrList.hasMoreElements()) {
-                String attrName = (String) attrList.nextElement();                
+                String attrName = (String) attrList.nextElement();
                 paramMap.put(attrName, request.getParameterValues(attrName)[0]);
             }
-            
-            processRequest(server, modelName, paramMap, response);
+
+            processRequest(modelName, paramMap, response);
 
         } catch (RepositoryException ex) {
             Exceptions.printStackTrace(ex);
@@ -191,64 +196,55 @@ public class ModelRunnerServlet extends HttpServlet {
             throws ServletException, IOException {
 
         ServletContext servletContext = this.getServletContext();
-        ObjectServer server = (ObjectServer) servletContext.getAttribute(ContextListener.KEY_DB4O_SERVER);
-        
+
         StringBuilder jsonBuilder = new StringBuilder();
         String line;
-        
+
         try {
-            
+
             if (request.getCharacterEncoding() == null) {
                 request.setCharacterEncoding("UTF-8");
             }
-            
+
             BufferedReader reader = request.getReader();
+
             while ((line = reader.readLine()) != null) {
                 jsonBuilder.append(line);
             }
-            
-            Map<String, String> requestParamMap = Maps.newHashMap();
 
-            if (jsonBuilder == null && jsonBuilder.toString().isEmpty()) {
+            if (jsonBuilder != null) {
                 
-            } else {
-                requestParamMap = new Gson().fromJson(jsonBuilder.toString(), Map.class);
+                Map<String, String> requestParamMap = 
+                        new Gson().fromJson(jsonBuilder.toString(), Map.class);
+                
+                String modelNameParam = (String) servletContext
+                        .getInitParameter(ContextListener.KEY_MODEL_NAME_PARAM);
+                String modelJsonParam = (String) servletContext
+                        .getInitParameter(ContextListener.KEY_MODEL_JSON_PARAM);
+
+                String modelName = requestParamMap.get(modelNameParam);
+
+                String modelJson = requestParamMap.get(modelJsonParam);
+
+                Preconditions.checkNotNull(modelName, "Model name cannot be null.");
+                
+                if (modelJson != null && !modelJson.isEmpty()) {
+
+                    ModelBean modelBean = new Gson().fromJson(modelJson, ModelBean.class);
+                    processRequest(modelName, modelBean, response);
+
+                }
             }
             
-            String modelNameParam = (String)servletContext.getInitParameter(ContextListener.KEY_MODEL_NAME_PARAM);
-            String paramNameParam = (String)servletContext.getInitParameter(ContextListener.KEY_PARAM_NAME_PARAM);
-            String modelJsonParam = (String)servletContext.getInitParameter(ContextListener.KEY_MODEL_JSON_PARAM);
-            
-            String modelName = requestParamMap.get(modelNameParam);
-            String paramName = requestParamMap.get(paramNameParam);
-            String modelJson = requestParamMap.get(modelJsonParam);
-            
-            Preconditions.checkNotNull(modelName, "Model name cannot be null.");
-            
-            
+            response.getWriter().print("Request failed!!!!");
+            response.flushBuffer();
 
-            if (modelJson != null && !modelJson.isEmpty()) {
-                
-                ModelBean modelBean = new Gson().fromJson(modelJson, ModelBean.class);
-                processRequest(server, modelName, modelBean, response);
-                
-            } else if (paramName != null && !paramName.isEmpty()) {
-                
-                Map<String, String> paramMap = new Gson().fromJson(paramName, Map.class);
-                processRequest(server, modelName, paramMap, response);
-                
-            } else {
-                ModelBean modelBean = null;
-                processRequest(server, modelName, modelBean, response);
-                
-            }
-            
         } catch (RepositoryException ex) {
             Exceptions.printStackTrace(ex);
-        } catch (Exception e) { 
-            /*report an error*/         
-        } 
-        
+        } catch (Exception e) {
+            /*report an error*/
+        }
+
     }
 
     /**
