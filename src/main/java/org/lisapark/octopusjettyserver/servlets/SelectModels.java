@@ -55,32 +55,15 @@ public class SelectModels extends HttpServlet {
 
         List<ProcessingModel> modelList = repository.getProcessingModelsByName(search);
 
-//        StringBuilder stringList = new StringBuilder();
-//        
-//        stringList.append("{\"data\":[");
-//        
-//        Boolean first = true;
         List<String> stringList = Lists.newArrayList();
         
         for(ProcessingModel model : modelList){
             
             stringList.add(model.toJson());
             
-//            if(first){
-//                first = false;
-//            } else {
-//                stringList.append(",");
-//            }
-//            stringList.append("{\"")
-//                    .append(NAME_PARAM).append("\":\"")
-//                    .append(model.getModelName()).append("\"}");
         }
-//        
-//        stringList.append("]}");
-        
+
         String json = new Gson().toJson(stringList, List.class);
-        
-//        List<String> jsonStrings = new Gson().fromJson(json, List.class);
         
         PrintWriter out = response.getWriter();
         

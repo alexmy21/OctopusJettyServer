@@ -24,6 +24,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -121,25 +122,16 @@ public class ModelRunnerServlet extends HttpServlet {
         modelRunner.runModel();
 
         response.setStatus(200);
-        response.setContentType("text/html;charset=UTF-8");
+        
+        String json = new Gson().toJson(modelBean, ModelBean.class);
+        
         PrintWriter out = response.getWriter();
-
-        try {
-            /*
-             * TODO output your page here. You may use following sample code.
-             */
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ModelRunner</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet ModelRunner has run Model: " + modelBean.getModelName() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-
-        } finally {
-            out.close();
-        }
+        
+        response.setContentType("application/json;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        out.print(json);
+        out.flush();
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
