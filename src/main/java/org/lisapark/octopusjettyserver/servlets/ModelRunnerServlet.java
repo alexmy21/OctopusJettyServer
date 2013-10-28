@@ -225,6 +225,10 @@ public class ModelRunnerServlet extends HttpServlet {
                     ModelBean modelBean = new Gson().fromJson(modelJson, ModelBean.class);
                     processRequest(modelName, modelBean, response);
 
+                } else {
+                    ModelBean modelBean = new ModelBean();
+                    modelBean.setModelName(modelName);
+                    processRequest(modelName, modelBean, response);
                 }
             }
             
