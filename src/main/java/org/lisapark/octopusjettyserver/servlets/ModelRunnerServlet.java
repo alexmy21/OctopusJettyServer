@@ -62,9 +62,10 @@ public class ModelRunnerServlet extends HttpServlet {
      * <code>POST</code> methods.
      */
     /**
-     * @param request servlet request
+     * @param modelName
+     * @param paramMap
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
+     * @throws org.lisapark.octopus.repository.RepositoryException
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(String modelName, Map<String, String> paramMap, 
@@ -81,7 +82,9 @@ public class ModelRunnerServlet extends HttpServlet {
 
         ModelRunner modelRunner = new ModelRunner(currentProcessingModel, paramMap, paramMap);
 
-        modelRunner.runModel();
+//        modelRunner.runModel();
+        
+        (new ModelRunnerThread(modelRunner)).start();
 
         response.setStatus(200);
         response.setContentType("text/html;charset=UTF-8");
@@ -119,7 +122,9 @@ public class ModelRunnerServlet extends HttpServlet {
 
         ModelRunner modelRunner = new ModelRunner(currentProcessingModel, modelBean);
 
-        modelRunner.runModel();
+//        modelRunner.runModel();
+        
+        (new ModelRunnerThread(modelRunner)).start();
 
         response.setStatus(200);
         
@@ -252,4 +257,16 @@ public class ModelRunnerServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+    
+    class ModelRunnerThread extends Thread {
+        ModelRunner modelRunner;
+        
+        ModelRunnerThread(ModelRunner modelRunner){
+            this.modelRunner = modelRunner;
+        }
+        
+        public void run(){
+            modelRunner.runModel();
+        }        
+    }
 }
