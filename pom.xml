@@ -16,38 +16,29 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>octopus</groupId>    
+    <name>octopus-server-0.7</name>
+    <artifactId>octopus-server-0.7</artifactId>
+    <version>0.7</version>
+    <packaging>jar</packaging>
+    <licenses>
+        <license>
+            <name>GNU General Public License Version 2</name>
+            <url>http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <url>http://maven.apache.org</url>
 
-  <groupId>octopus</groupId>
-  <artifactId>OctopusJettyServer</artifactId>
-  <version>0.1-SNAPSHOT</version>
-  <packaging>jar</packaging>
-
-  <name>OctopusJettyServer</name>
-  <url>http://maven.apache.org</url>
-
-  <properties>
+    <properties>
         <java.version>1.6</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jettyVersion>8.1.9.v20130131</jettyVersion>
     </properties>
     
-    <scm>
-        <url>http://gdata-java-client.googlecode.com/svn/trunk/</url>
-        <connection>scm:svn:http://gdata-java-client.googlecode.com/svn/trunk/</connection>
-        <developerConnection>scm:svn:http://gdata-java-client.googlecode.com/svn/trunk/</developerConnection>
-    </scm>
-    
     <repositories>
-        <repository>
-            <id>sardine-google-svn-repo</id>
-            <snapshots> 
-                <enabled>true</enabled> 
-            </snapshots>
-            <name>Sardine maven repo at Google Code</name>
-            <url>http://sardine.googlecode.com/svn/maven/</url>
-        </repository>
         
         <repository>
             <id>netbeans</id>
@@ -60,30 +51,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </snapshots>
             <url>http://bits.netbeans.org/maven2</url>
         </repository>
+       
         <repository>
-            <id>source.db4o</id>
-            <url>http://source.db4o.com/maven</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
+            <id>neo4j-snapshot-repository</id>
+            <name>Neo4j Maven 2 snapshot repository</name>
+            <url>http://m2.neo4j.org/snapshots</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
-        </repository>
-        <!-- Local repository where we install jide artifacts -->
-        <repository>
-            <id>lib</id>
-            <name>lib</name>
             <releases>
-                <enabled>true</enabled>
-                <checksumPolicy>ignore</checksumPolicy>
-            </releases>
-            <snapshots>
                 <enabled>false</enabled>
-            </snapshots>
-            <url>file://${project.basedir}/lib</url>
-        </repository>       
-
+            </releases>
+        </repository>
+        <repository>
+            <id>Sun</id>
+            <url>http://download.java.net/maven/2</url>
+        </repository> 
     </repositories>
     
     <dependencies>
@@ -157,13 +140,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <version>RELEASE701</version>
         </dependency>
 
-        <!-- Jide Stuff -->
-
         <!-- DB4O -->
         <dependency>
             <groupId>com.db4o</groupId>
             <artifactId>db4o-full-java5</artifactId>
             <version>8.1-SNAPSHOT</version>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>com.db4o</groupId>
@@ -173,11 +155,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </dependency>
         <dependency>
             <groupId>com.db4o</groupId>
-            <artifactId>com.db4o.drs</artifactId>
-            <version>8.1</version>
+            <artifactId>db4o-core-java5</artifactId>
+            <version>8.1-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
-
+        <dependency>
+            <groupId>com.db4o</groupId>
+            <artifactId>db4o-instrumentation-java5</artifactId>
+            <version>8.1-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
 
         <dependency>
             <groupId>org.mockito</groupId>
@@ -185,24 +172,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <version>1.8.5</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.17</version>
-        </dependency>
         
-        <dependency>
-            <groupId>com.google.gdata</groupId>
-            <artifactId>com.google.gdata.spreadsheet</artifactId>
-            <version>3.0</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>com.google.gdata</groupId>
-            <artifactId>com.google.gdata.core</artifactId>
-            <version>1.0</version>
-            <type>jar</type>
-        </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-math3</artifactId>
@@ -214,65 +184,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <version>3.7</version>
             <type>jar</type>
         </dependency>
-        <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongo-java-driver</artifactId>
-            <version>2.7.3</version>
-            <type>jar</type>
-        </dependency>
+        
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20070829</version>
             <type>jar</type>
         </dependency>
-        <dependency>
-            <artifactId>choco-Choco</artifactId>
-            <groupId>choco</groupId>
-            <type>jar</type>
-            <version>2.1.4</version>
-        </dependency>
-        <dependency>
-            <artifactId>choco-solver</artifactId>
-            <groupId>choco</groupId>
-            <type>jar</type>
-            <version>2.1.4</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.2.2</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>com.googlecode.sardine</groupId>
-            <artifactId>sardine</artifactId>
-            <version>314</version>
-        </dependency>
-        <dependency>
-            <groupId>com.rabbitmq</groupId>
-            <artifactId>amqp-client</artifactId>
-            <version>2.8.7</version>
-        </dependency>
-        <dependency>
-            <groupId>net.htmlparser.jericho</groupId>
-            <artifactId>jericho-html</artifactId>
-            <version>3.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j</artifactId>
-            <version>1.9.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-rest-graphdb</artifactId>
-            <version>1.9.3-SNAPSHOT</version>
-            <type>jar</type>
-        </dependency>
         
-        <!--================================================================-->
-        
+        <!--================================================================-->       
         
         <dependency>
             <groupId>com.googlecode.json-simple</groupId>
@@ -368,19 +288,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <version>1.12.0-beta</version>
             <type>jar</type>
         </dependency>
-        
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring</artifactId>
-            <version>2.5</version>
-            <type>jar</type>
-        </dependency>
-        
-        <dependency>
-            <groupId>net.karmafiles.db</groupId>
-            <artifactId>mongomapper</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
-        </dependency>
+      
         <dependency>
             <groupId>apache-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
@@ -392,36 +300,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <artifactId>groovy</artifactId>
             <version>1.8.6</version>
         </dependency>
-        
-        <!-- DT Rules -->
-        
+       
         <dependency>
             <groupId>javax.servlet.jsp</groupId>
             <artifactId>jsp-api</artifactId>
             <version>2.1</version>
             <type>jar</type>
         </dependency>
-        
-        <!-- Choco -->
-        
         <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-redis</artifactId>
-            <version>1.0.3.RELEASE</version>
-            <type>jar</type>
-        </dependency>
-        <!--dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-kernel</artifactId>
-            <version>1.9</version>
-            <type>jar</type>
-        </dependency-->
-        <dependency>
-            <groupId>jersey</groupId>
+            <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-client</artifactId>
             <version>1.4</version>
-            <type>jar</type>
         </dependency>
+
         <dependency>
             <groupId>commons-cli</groupId>
             <artifactId>commons-cli</artifactId>
@@ -429,14 +320,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>octopus-core-11</artifactId>
-            <version>0.5</version>
+            <artifactId>octopus-core-0.7</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
     <build>
-        <plugins>
-           
+        <plugins>           
             <plugin>
                 <!-- This plugin is needed for the servlet example -->
                 <groupId>org.mortbay.jetty</groupId>

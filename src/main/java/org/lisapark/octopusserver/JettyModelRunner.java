@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.lisapark.octopusjettyserver;
+package org.lisapark.octopusserver;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,10 +23,10 @@ import org.apache.commons.io.IOUtils;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.lisapark.octopusjettyserver.servlets.ContextListener;
-import org.lisapark.octopusjettyserver.servlets.ModelRunnerServlet;
-import org.lisapark.octopusjettyserver.servlets.SelectModels;
-import org.lisapark.octopusjettyserver.servlets.Test;
+import org.lisapark.octopusserver.servlets.ContextListener;
+import org.lisapark.octopusserver.servlets.ModelRunnerServlet;
+import org.lisapark.octopusserver.servlets.SelectModels;
+import org.lisapark.octopusserver.servlets.Test;
 
 /**
  * ModelRunner Servlet

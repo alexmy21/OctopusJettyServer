@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.lisapark.octopusjettyserver.servlets;
+package org.lisapark.octopusserver.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;

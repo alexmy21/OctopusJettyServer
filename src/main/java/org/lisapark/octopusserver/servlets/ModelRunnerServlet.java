@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.lisapark.octopusjettyserver.servlets;
+package org.lisapark.octopusserver.servlets;
 
 import com.db4o.ObjectServer;
 import com.google.common.collect.Maps;
